@@ -4,7 +4,7 @@ A hardened reverse proxy in a single C# file. TLS 1.3 only, mutual TLS required,
 
 ---
 
-Features
+# Features
 
 - TLS 1.3 only — older protocol versions are not negotiated
 - Mutual TLS required — no anonymous clients
@@ -22,7 +22,7 @@ Features
 
 ---
 
-Requirements
+# Requirements
 
 - .NET 8 SDK or later
 - A server certificate (PFX) for TLS termination
@@ -44,7 +44,7 @@ PROXY_MAX_BODY no 10485760 (10 MB) Max request body in bytes
 
 ---
 
-Running
+# Running
 
 ```
 export PROXY_CERT=/etc/proxy/server.pfx
@@ -59,7 +59,7 @@ The proxy listens on 0.0.0.0:8443 (or PROXY_PORT) over HTTP/2 + TLS 1.3 and requ
 
 ---
 
-Upstream resolution
+# Upstream resolution
 
 The Host header of each inbound request is matched against the host component of each entry in PROXY_UPSTREAMS. On a match, the request is forwarded to that upstream at the original path and query. On no match, the request is rejected with 400 Bad Request before any outbound socket is opened.
 
@@ -67,13 +67,13 @@ Example: with PROXY_UPSTREAMS=https://internal-api.corp:443/, a request to https
 
 ---
 
-Client certificates
+# Client certificates
 
 Clients must present a certificate chaining to a trusted CA. The default validation:
 
-· Rejects any chain error
-· Requires online revocation check (OCSP / CRL)
-· Requires the entire chain to build cleanly
+- Rejects any chain error
+- Requires online revocation check (OCSP / CRL)
+- Requires the entire chain to build cleanly
 
 To pin a specific client CA, uncomment the issuer check in ValidateClientCert:
 
@@ -83,7 +83,7 @@ if (cert.Issuer != "CN=My-Client-CA") return false;
 
 ---
 
-What gets forwarded upstream
+# What gets forwarded upstream
 
 Request headers: all headers except hop-by-hop headers, Host, and client-supplied forwarding headers (X-Forwarded-For, X-Forwarded-Host, X-Forwarded-Proto, Forwarded, X-Real-IP).
 
@@ -97,7 +97,7 @@ Response headers: all headers except hop-by-hop headers, Server, X-Powered-By, S
 
 ---
 
-Rejected requests
+# Rejected requests
 
 The proxy returns one of the following without contacting any upstream:
 
@@ -111,7 +111,7 @@ Rate limit exceeded 429 Too Many Requests
 
 ---
 
-Deployment notes
+# Deployment notes
 
 - Secrets: load the PFX password from a secrets manager (Key Vault, AWS Secrets Manager, secret-tool, etc.). Do not pass it on the command line or bake it into an image.
 - Container: run as non-root, read-only filesystem, no CAP_NET_RAW, egress restricted to the allow-listed upstream IPs.
@@ -122,7 +122,7 @@ Deployment notes
 
 ---
 
-Extending
+# Extending
 
 Common additions and where they go:
 
@@ -135,7 +135,7 @@ Common additions and where they go:
 
 ---
 
-Testing the proxy
+# Testing the proxy
 
 ```
 # Should succeed (matching Host + valid client cert)
